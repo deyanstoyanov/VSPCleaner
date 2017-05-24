@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSPCleaner", "VSPCleaner\VS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSPCleaner.Models", "VSPCleaner.Models\VSPCleaner.Models.csproj", "{DE71EBF2-267A-4654-9EA2-CC36CB40B7A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSPCleaner.Infrastructure", "VSPCleaner.Infrastructure\VSPCleaner.Infrastructure.csproj", "{9FC9BB99-7773-49AD-91B3-43439254A817}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{DE71EBF2-267A-4654-9EA2-CC36CB40B7A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE71EBF2-267A-4654-9EA2-CC36CB40B7A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE71EBF2-267A-4654-9EA2-CC36CB40B7A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FC9BB99-7773-49AD-91B3-43439254A817}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FC9BB99-7773-49AD-91B3-43439254A817}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FC9BB99-7773-49AD-91B3-43439254A817}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FC9BB99-7773-49AD-91B3-43439254A817}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
