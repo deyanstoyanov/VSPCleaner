@@ -10,6 +10,7 @@
     using PropertyChanged;
 
     using VSPCleaner.Infrastructure.Commands;
+    using VSPCleaner.Infrastructure.DeletionService;
     using VSPCleaner.Models;
 
     using Application = System.Windows.Application;
@@ -17,10 +18,13 @@
     [ImplementPropertyChanged]
     public class ShellViewModel
     {
+        private ICollection<Folder> folders;
+
         public ShellViewModel()
         {
             this.ExitCommand = new DelegateCommand(this.OnExitCommand);
             this.ImportDirectoryCommand = new DelegateCommand(this.OnImportDirectoryCommand);
+            this.CleanDirectoryCommand = new DelegateCommand(this.OnCleanDirectoryCommand, () => this.Folders.Any());
             this.Folders = new ObservableCollection<Folder>();
         }
 
@@ -28,7 +32,21 @@
 
         public ICommand ImportDirectoryCommand { get; set; }
 
-        public ICollection<Folder> Folders { get; set; }
+        public ICommand CleanDirectoryCommand { get; set; }
+
+        public ICollection<Folder> Folders
+        {
+            get
+            {
+                return this.folders;
+            }
+
+            set
+            {
+                this.folders = value;
+                ((DelegateCommand)this.CleanDirectoryCommand).RaiseCanExecuteChanged();
+            }
+        }
 
         public bool IsFolderImported { get; set; }
 
@@ -48,7 +66,7 @@
             if (this.Folders.Any(x => x.Path == selectedPath))
             {
                 MessageBox.Show(
-                    $"{selectedPath} is already imported!",
+                    $"{selectedPath} is already imported!", 
                     "Duplicate folders", 
                     MessageBoxButtons.OK, 
                     MessageBoxIcon.Information);
@@ -63,6 +81,18 @@
 
             this.IsFolderImported = true;
             this.ImportedFoldersStatusBarItemText = $"{this.Folders.Count} imported folder(s)";
+            ((DelegateCommand)this.CleanDirectoryCommand).RaiseCanExecuteChanged();
+        }
+
+        private void OnCleanDirectoryCommand()
+        {
+            foreach (var folder in this.Folders)
+            {
+                DeletionService.DeleteFoldersRecursively(folder.Path);
+            }
+
+            this.Folders.Clear();
+            ((DelegateCommand)this.CleanDirectoryCommand).RaiseCanExecuteChanged();
         }
     }
 }

@@ -25,6 +25,9 @@
                                   Label="Add folder"
                                   LargeImageSource="pack://application:,,,/VSPCleaner.Resources;component/Images/folder-add-solid.png" />
                 </RibbonGroup>
+                <RibbonGroup x:Name="ActionGroup" Header="Directory">
+                    <RibbonButton Command="{Binding CleanDirectoryCommand}" Label="Clean" />
+                </RibbonGroup>
             </RibbonTab>
         </Ribbon>
         <DockPanel x:Name="DockPanel"
