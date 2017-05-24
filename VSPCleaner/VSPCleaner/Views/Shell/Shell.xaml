@@ -11,6 +11,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Ribbon x:Name="Ribbon">
             <Ribbon.ApplicationMenu>
@@ -38,12 +39,24 @@
                       CanUserSortColumns="True"
                       DockPanel.Dock="Top"
                       IsReadOnly="True"
-                      IsTextSearchEnabled="False">
+                      IsTextSearchEnabled="False"
+                      ItemsSource="{Binding Folders, Mode=TwoWay}"
+                      Visibility="{Binding IsFolderImported, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Name" />
-                    <DataGridTextColumn Header="Path" />
+                    <DataGridTextColumn Binding="{Binding Name}" Header="Name" />
+                    <DataGridTextColumn Binding="{Binding Path}" Header="Path" />
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>
+        <StatusBar x:Name="StatusBar"
+                   Grid.Row="2"
+                   Height="25"
+                   Margin="0,0,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Stretch">
+            <StatusBarItem>
+                <TextBlock x:Name="ImportedFolders" Text="{Binding ImportedFoldersStatusBarItemText, Mode=TwoWay}" />
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </RibbonWindow>
