@@ -21,7 +21,9 @@
             </Ribbon.ApplicationMenu>
             <RibbonTab Header="Clean">
                 <RibbonGroup x:Name="CleanGroup" Header="Import">
-                    <RibbonButton Command="{Binding ImportDirectoryCommand}" Label="Add folder" />
+                    <RibbonButton Command="{Binding ImportDirectoryCommand}"
+                                  Label="Add folder"
+                                  LargeImageSource="pack://application:,,,/VSPCleaner.Resources;component/Images/folder-add-solid.png" />
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>

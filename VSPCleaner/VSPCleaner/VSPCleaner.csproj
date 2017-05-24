@@ -113,6 +113,10 @@
       <Project>{DE71EBF2-267A-4654-9EA2-CC36CB40B7A4}</Project>
       <Name>VSPCleaner.Models</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VSPCleaner.Resources\VSPCleaner.Resources.csproj">
+      <Project>{95f25ab2-82c6-4eb7-8e88-b20347d8688c}</Project>
+      <Name>VSPCleaner.Resources</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="FodyWeavers.xml" />
