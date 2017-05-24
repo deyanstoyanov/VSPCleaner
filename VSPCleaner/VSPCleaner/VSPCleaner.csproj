@@ -38,6 +38,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Controls.Ribbon" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -56,7 +57,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Infrastructure\Commands\DelegateCommand.cs" />
     <Compile Include="ViewModels\Shell\ShellViewModel.cs" />
     <Compile Include="Views\Shell\Shell.xaml.cs">
       <DependentUpon>Shell.xaml</DependentUpon>
@@ -97,7 +97,12 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\VSPCleaner.Infrastructure\VSPCleaner.Infrastructure.csproj">
+      <Project>{9FC9BB99-7773-49AD-91B3-43439254A817}</Project>
+      <Name>VSPCleaner.Infrastructure</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
