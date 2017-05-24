@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSPCleaner.Models", "VSPCle
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSPCleaner.Infrastructure", "VSPCleaner.Infrastructure\VSPCleaner.Infrastructure.csproj", "{9FC9BB99-7773-49AD-91B3-43439254A817}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSPCleaner.Resources", "VSPCleaner.Resources\VSPCleaner.Resources.csproj", "{95F25AB2-82C6-4EB7-8E88-B20347D8688C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{9FC9BB99-7773-49AD-91B3-43439254A817}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FC9BB99-7773-49AD-91B3-43439254A817}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FC9BB99-7773-49AD-91B3-43439254A817}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95F25AB2-82C6-4EB7-8E88-B20347D8688C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95F25AB2-82C6-4EB7-8E88-B20347D8688C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95F25AB2-82C6-4EB7-8E88-B20347D8688C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95F25AB2-82C6-4EB7-8E88-B20347D8688C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
