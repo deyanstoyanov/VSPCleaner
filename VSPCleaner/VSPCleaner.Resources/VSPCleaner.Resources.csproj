@@ -42,7 +42,10 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\clean.png" />
+    <Resource Include="Images\delete.png" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\folder-add-solid.png" />
   </ItemGroup>
