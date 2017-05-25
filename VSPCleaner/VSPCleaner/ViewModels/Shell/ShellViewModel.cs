@@ -3,7 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.ComponentModel;
     using System.Linq;
+    using System.Runtime.CompilerServices;
     using System.Windows.Forms;
     using System.Windows.Input;
 
@@ -16,15 +18,18 @@
     using Application = System.Windows.Application;
 
     [ImplementPropertyChanged]
-    public class ShellViewModel
+    public class ShellViewModel : INotifyPropertyChanged
     {
-        private ICollection<Folder> folders;
+        private Folder selectedFolder;
 
         public ShellViewModel()
         {
             this.ExitCommand = new DelegateCommand(this.OnExitCommand);
             this.ImportDirectoryCommand = new DelegateCommand(this.OnImportDirectoryCommand);
             this.CleanDirectoryCommand = new DelegateCommand(this.OnCleanDirectoryCommand, () => this.Folders.Any());
+            this.RemoveDirectoryCommand = new DelegateCommand(
+                this.OnRemoveDirectoryCommand, 
+                () => this.SelectedFolder != null);
             this.Folders = new ObservableCollection<Folder>();
         }
 
@@ -34,23 +39,29 @@
 
         public ICommand CleanDirectoryCommand { get; set; }
 
-        public ICollection<Folder> Folders
+        public ICommand RemoveDirectoryCommand { get; set; }
+
+        public ICollection<Folder> Folders { get; set; }
+
+        public Folder SelectedFolder
         {
             get
             {
-                return this.folders;
+                return this.selectedFolder;
             }
 
             set
             {
-                this.folders = value;
-                ((DelegateCommand)this.CleanDirectoryCommand).RaiseCanExecuteChanged();
+                this.selectedFolder = value;
+                ((DelegateCommand)this.RemoveDirectoryCommand).RaiseCanExecuteChanged();
             }
         }
 
-        public bool IsFolderImported { get; set; }
+        public bool IsFolderImported => this.Folders.Any();
 
-        public string ImportedFoldersStatusBarItemText { get; set; }
+        public string ImportedFoldersStatusBarItemText => $"{this.Folders.Count} imported folder(s)";
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnExitCommand() => Application.Current.Shutdown();
 
@@ -79,9 +90,9 @@
 
             this.Folders.Add(folder);
 
-            this.IsFolderImported = true;
-            this.ImportedFoldersStatusBarItemText = $"{this.Folders.Count} imported folder(s)";
             ((DelegateCommand)this.CleanDirectoryCommand).RaiseCanExecuteChanged();
+            this.OnPropertyChanged(nameof(this.IsFolderImported));
+            this.OnPropertyChanged(nameof(this.ImportedFoldersStatusBarItemText));
         }
 
         private void OnCleanDirectoryCommand()
@@ -92,7 +103,25 @@
             }
 
             this.Folders.Clear();
+
             ((DelegateCommand)this.CleanDirectoryCommand).RaiseCanExecuteChanged();
+            this.OnPropertyChanged(nameof(this.IsFolderImported));
+            this.OnPropertyChanged(nameof(this.ImportedFoldersStatusBarItemText));
         }
+
+        private void OnRemoveDirectoryCommand()
+        {
+            if (this.SelectedFolder != null)
+            {
+                this.Folders.Remove(this.SelectedFolder);
+
+                ((DelegateCommand)this.CleanDirectoryCommand).RaiseCanExecuteChanged();
+                this.OnPropertyChanged(nameof(this.IsFolderImported));
+                this.OnPropertyChanged(nameof(this.ImportedFoldersStatusBarItemText));
+            }
+        }
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+            => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

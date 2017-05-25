@@ -26,7 +26,12 @@
                                   LargeImageSource="pack://application:,,,/VSPCleaner.Resources;component/Images/folder-add-solid.png" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="ActionGroup" Header="Directory">
-                    <RibbonButton Command="{Binding CleanDirectoryCommand}" Label="Clean" />
+                    <RibbonButton Command="{Binding CleanDirectoryCommand}"
+                                  Label="Clean"
+                                  LargeImageSource="pack://application:,,,/VSPCleaner.Resources;component/Images/clean.png" />
+                    <RibbonButton Command="{Binding RemoveDirectoryCommand}"
+                                  Label="Remove"
+                                  LargeImageSource="pack://application:,,,/VSPCleaner.Resources;component/Images/delete.png" />
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>
@@ -41,11 +46,14 @@
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Stretch"
                       AutoGenerateColumns="False"
+                      CanUserReorderColumns="True"
+                      CanUserResizeRows="False"
                       CanUserSortColumns="True"
                       DockPanel.Dock="Top"
                       IsReadOnly="True"
                       IsTextSearchEnabled="False"
                       ItemsSource="{Binding Folders, Mode=TwoWay}"
+                      SelectedItem="{Binding SelectedFolder, Mode=TwoWay}"
                       Visibility="{Binding IsFolderImported, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding Name}" Header="Name" />
@@ -53,15 +61,14 @@
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>
-        <StatusBar x:Name="StatusBar"
-                   Grid.Row="2"
-                   Height="25"
-                   Margin="0,0,0,0"
-                   HorizontalAlignment="Left"
-                   VerticalAlignment="Stretch">
-            <StatusBarItem>
-                <TextBlock x:Name="ImportedFolders" Text="{Binding ImportedFoldersStatusBarItemText, Mode=TwoWay}" />
-            </StatusBarItem>
-        </StatusBar>
+        <DockPanel Grid.Row="2">
+            <DockPanel DockPanel.Dock="Bottom">
+                <StatusBar x:Name="StatusBar" Height="25">
+                    <StatusBarItem>
+                        <TextBlock x:Name="ImportedFolders" Text="{Binding ImportedFoldersStatusBarItemText}" />
+                    </StatusBarItem>
+                </StatusBar>
+            </DockPanel>
+        </DockPanel>
     </Grid>
 </RibbonWindow>
