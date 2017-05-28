@@ -1,7 +1,6 @@
 ﻿namespace VSPCleaner.ViewModels.Shell
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Linq;
@@ -13,6 +12,7 @@
 
     using VSPCleaner.Infrastructure.Commands;
     using VSPCleaner.Infrastructure.DeletionService;
+    using VSPCleaner.Infrastructure.ProgressDialog;
     using VSPCleaner.Models;
 
     using Application = System.Windows.Application;
@@ -41,7 +41,7 @@
 
         public ICommand RemoveDirectoryCommand { get; set; }
 
-        public ICollection<Folder> Folders { get; set; }
+        public ObservableCollection<Folder> Folders { get; set; }
 
         public Folder SelectedFolder
         {
@@ -97,10 +97,20 @@
 
         private void OnCleanDirectoryCommand()
         {
-            foreach (var folder in this.Folders)
-            {
-                DeletionService.DeleteFoldersRecursively(folder.Path);
-            }
+            var result = ProgressDialog.Execute(
+                Application.Current.Windows[0], 
+                "Processing, please wait...", 
+                () =>
+                    {
+                        for (int i = 0; i < this.Folders.Count; i++)
+                        {
+                            ProgressDialog.Current.Report($"Executing step {i}/{this.Folders.Count}...");
+                            DeletionService.DeleteFoldersRecursively(this.Folders[i].Path);
+                        }
+                    }, 
+                ProgressDialogSettings.WithSubLabel);
+
+            MessageBox.Show(result.OperationFailed ? "Cleaning failed." : "Cleaning Complete.");
 
             this.Folders.Clear();
 
@@ -111,14 +121,16 @@
 
         private void OnRemoveDirectoryCommand()
         {
-            if (this.SelectedFolder != null)
+            if (this.SelectedFolder == null)
             {
-                this.Folders.Remove(this.SelectedFolder);
-
-                ((DelegateCommand)this.CleanDirectoryCommand).RaiseCanExecuteChanged();
-                this.OnPropertyChanged(nameof(this.IsFolderImported));
-                this.OnPropertyChanged(nameof(this.ImportedFoldersStatusBarItemText));
+                return;
             }
+
+            this.Folders.Remove(this.SelectedFolder);
+
+            ((DelegateCommand)this.CleanDirectoryCommand).RaiseCanExecuteChanged();
+            this.OnPropertyChanged(nameof(this.IsFolderImported));
+            this.OnPropertyChanged(nameof(this.ImportedFoldersStatusBarItemText));
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
