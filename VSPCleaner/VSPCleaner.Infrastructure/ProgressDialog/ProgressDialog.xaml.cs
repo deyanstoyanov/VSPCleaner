@@ -55,6 +55,8 @@
             }
         }
 
+        public ProgressDialogResult Result { get; private set; }
+
         public string SubLabel
         {
             get
@@ -68,7 +70,65 @@
             }
         }
 
-        public ProgressDialogResult Result { get; private set; }
+        public static ProgressDialogResult Execute(Window owner, string label, Action operation) => ExecuteInternal(
+            owner,
+            label,
+            operation,
+            null);
+
+        public static ProgressDialogResult Execute(
+            Window owner,
+            string label,
+            Action operation,
+            ProgressDialogSettings settings) => ExecuteInternal(owner, label, operation, settings);
+
+        public static ProgressDialogResult Execute(Window owner, string label, Func<object> operationWithResult) =>
+            ExecuteInternal(owner, label, operationWithResult, null);
+
+        public static ProgressDialogResult Execute(
+            Window owner,
+            string label,
+            Func<object> operationWithResult,
+            ProgressDialogSettings settings) => ExecuteInternal(owner, label, operationWithResult, settings);
+
+        public static void Execute(
+            Window owner,
+            string label,
+            Action operation,
+            Action<ProgressDialogResult> successOperation,
+            Action<ProgressDialogResult> failureOperation = null,
+            Action<ProgressDialogResult> cancelledOperation = null)
+        {
+            var result = ExecuteInternal(owner, label, operation, null);
+            if (result.Cancelled && cancelledOperation != null)
+            {
+                cancelledOperation(result);
+            }
+            else if (result.OperationFailed && failureOperation != null)
+            {
+                failureOperation(result);
+            }
+            else
+            {
+                successOperation?.Invoke(result);
+            }
+        }
+
+        public static ProgressDialogResult ExecuteInternal(
+            Window owner,
+            string label,
+            object operation,
+            ProgressDialogSettings settings)
+        {
+            var dialog = new ProgressDialog(settings) { Owner = owner };
+
+            if (!string.IsNullOrEmpty(label))
+            {
+                dialog.Label = label;
+            }
+
+            return dialog.Execute(operation);
+        }
 
         public ProgressDialogResult Execute(object operation)
         {
@@ -124,12 +184,12 @@
                     result = new ProgressDialogResult(e);
 
                     this.Dispatcher.BeginInvoke(
-                        DispatcherPriority.Send, 
+                        DispatcherPriority.Send,
                         (SendOrPostCallback)delegate
                             {
-                                isBusy = false;
-                                Close();
-                            }, 
+                                this.isBusy = false;
+                                this.Close();
+                            },
                         null);
                 };
 
@@ -164,62 +224,5 @@
         }
 
         private void OnClosing(object sender, CancelEventArgs e) => e.Cancel = this.isBusy;
-
-        public static ProgressDialogResult Execute(Window owner, string label, Action operation)
-            => ExecuteInternal(owner, label, operation, null);
-
-        public static ProgressDialogResult Execute(
-            Window owner, 
-            string label, 
-            Action operation, 
-            ProgressDialogSettings settings) => ExecuteInternal(owner, label, operation, settings);
-
-        public static ProgressDialogResult Execute(Window owner, string label, Func<object> operationWithResult)
-            => ExecuteInternal(owner, label, operationWithResult, null);
-
-        public static ProgressDialogResult Execute(
-            Window owner, 
-            string label, 
-            Func<object> operationWithResult, 
-            ProgressDialogSettings settings) => ExecuteInternal(owner, label, operationWithResult, settings);
-
-        public static void Execute(
-            Window owner, 
-            string label, 
-            Action operation, 
-            Action<ProgressDialogResult> successOperation, 
-            Action<ProgressDialogResult> failureOperation = null, 
-            Action<ProgressDialogResult> cancelledOperation = null)
-        {
-            var result = ExecuteInternal(owner, label, operation, null);
-            if (result.Cancelled && cancelledOperation != null)
-            {
-                cancelledOperation(result);
-            }
-            else if (result.OperationFailed && failureOperation != null)
-            {
-                failureOperation(result);
-            }
-            else
-            {
-                successOperation?.Invoke(result);
-            }
-        }
-
-        public static ProgressDialogResult ExecuteInternal(
-            Window owner, 
-            string label, 
-            object operation, 
-            ProgressDialogSettings settings)
-        {
-            var dialog = new ProgressDialog(settings) { Owner = owner };
-
-            if (!string.IsNullOrEmpty(label))
-            {
-                dialog.Label = label;
-            }
-
-            return dialog.Execute(operation);
-        }
     }
 }
