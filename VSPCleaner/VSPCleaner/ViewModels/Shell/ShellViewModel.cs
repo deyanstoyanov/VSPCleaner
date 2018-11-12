@@ -26,9 +26,9 @@
         {
             this.ExitCommand = new DelegateCommand(this.OnExitCommand);
             this.ImportDirectoryCommand = new DelegateCommand(this.OnImportDirectoryCommand);
-            this.CleanDirectoryCommand = new DelegateCommand(this.OnCleanDirectoryCommand, () => this.Folders.Any());
+            this.CleanDirectoryCommand = new DelegateCommand(this.OnCleanDirectoryCommand, () => this.IsFolderImported);
             this.RemoveDirectoryCommand = new DelegateCommand(
-                this.OnRemoveDirectoryCommand, 
+                this.OnRemoveDirectoryCommand,
                 () => this.SelectedFolder != null);
             this.Folders = new ObservableCollection<Folder>();
         }
@@ -77,9 +77,9 @@
             if (this.Folders.Any(x => x.Path == selectedPath))
             {
                 MessageBox.Show(
-                    $"{selectedPath} is already imported!", 
-                    "Duplicate folders", 
-                    MessageBoxButtons.OK, 
+                    $"{selectedPath} is already imported!",
+                    "Duplicate folders",
+                    MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
             }
@@ -98,21 +98,27 @@
         private void OnCleanDirectoryCommand()
         {
             var result = ProgressDialog.Execute(
-                Application.Current.Windows[0], 
-                "Processing, please wait...", 
+                Application.Current.Windows[0],
+                "Processing, please wait...",
                 () =>
+                {
+                    for (int i = 0; i < this.Folders.Count; i++)
                     {
-                        for (int i = 0; i < this.Folders.Count; i++)
-                        {
-                            ProgressDialog.Current.Report($"Executing step {i}/{this.Folders.Count}...");
-                            DeletionService.DeleteFoldersRecursively(this.Folders[i].Path);
-                        }
-                    }, 
+                        ProgressDialog.Current.Report($"Executing step {i}/{this.Folders.Count}...");
+                        DeletionService.DeleteFoldersRecursively(this.Folders[i].Path);
+                    }
+                },
                 ProgressDialogSettings.WithSubLabel);
 
-            MessageBox.Show(result.OperationFailed ? "Cleaning failed." : "Cleaning Complete.");
-
-            this.Folders.Clear();
+            if (result.OperationFailed)
+            {
+                MessageBox.Show("Cleaning failed.");
+            }
+            else
+            {
+                MessageBox.Show("Cleaning Complete.");
+                this.Folders.Clear();
+            }
 
             ((DelegateCommand)this.CleanDirectoryCommand).RaiseCanExecuteChanged();
             this.OnPropertyChanged(nameof(this.IsFolderImported));

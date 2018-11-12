@@ -48,7 +48,23 @@
         {
             if (Directory.Exists(directory))
             {
+                DirectoryInfo directoryInfo = new DirectoryInfo(directory);
+                SetAttributeNormal(directoryInfo);
+
                 Directory.Delete(directory, true);
+            }
+        }
+
+        private static void SetAttributeNormal(DirectoryInfo directoryInfo)
+        {
+            foreach (var directory in directoryInfo.GetDirectories())
+            {
+                SetAttributeNormal(directory);
+            }
+
+            foreach (var file in directoryInfo.GetFiles())
+            {
+                file.Attributes = FileAttributes.Normal;
             }
         }
     }
